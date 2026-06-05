@@ -74,9 +74,11 @@
 
 5. **Практика 5: Настройка Random Forest с помощью RandomizedSearchCV и оценка качества модели.**
 
-   Кратко: 
+   Кратко: Был выполнен подбор гиперпараметров для Logistic Regression, Decision Tree и Random Forest с помощью RandomizedSearchCV, а также сравнены варианты заполнения пропущенного возраста.
 
-   Результат: 
+   Результат: Лучший результат на validation показала Logistic Regression: accuracy около 0.85, F1-score около 0.80 и ROC-AUC около 0.88. Random Forest и Decision Tree также показали результат выше случайного классификатора, но немного уступили Logistic Regression.
+
+   [Ссылка на ноутбук:](https://github.com/sonyakkmas/internship-week-1/blob/main/5-friday/practice-5.ipynb)
 
 ---
 
