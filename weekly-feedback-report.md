@@ -65,11 +65,17 @@
    [Ссылка на ноутбук:](https://github.com/sonyakkmas/internship-week-1/blob/main/4-thursday/main.ipynb)
 
 4. **Практика 4: Обучение и сравнение логистической регрессии, дерева решений и случайного леса.**
-   Кратко: 
-   Результат: 
+
+   Кратко: Были обучены и сравнены три модели классификации: Logistic Regression, Decision Tree и Random Forest. Для оценки использовались cross-validation, accuracy, F1-score, classification report и confusion matrix.
+
+   Результат: Лучший результат показала Logistic Regression с validation accuracy около 0.84 и F1-score около 0.79. Random Forest показал немного более слабый результат, а Decision Tree оказался наименее точной моделью.
+
+   [Ссылка на ноутбук:](https://github.com/sonyakkmas/internship-week-1/blob/main/5-friday/practice-4.ipynb)
 
 5. **Практика 5: Настройка Random Forest с помощью RandomizedSearchCV и оценка качества модели.**
+
    Кратко: 
+
    Результат: 
 
 ---
