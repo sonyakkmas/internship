@@ -33,7 +33,7 @@
 
     Результат: MLP показала `Accuracy = 0.84` и `F1-score = 0.76`. По качеству модель оказалась немного слабее логистической регрессии, но сопоставима с деревом решений и Random Forest.
    
-    [Ссылка на ноутбук:](https://github.com/sonyakkmas/internship/blob/main/week-2/1-monday/main.ipynb)
+    [Ссылка на ноутбук:](https://github.com/sonyakkmas/internship/blob/main/week-2/1-monday.ipynb)
 
 
 ---
