@@ -46,7 +46,7 @@
 
    Результат: Проведен первичный анализ датасета Titanic и сделаны первые выводы о распределении данных и факторах, связанных с выживаемостью пассажиров. 
    
-   [Ссылка на ноутбук:](https://github.com/sonyakkmas/internship-week-1/blob/main/2-tuesday/main.ipynb)
+   [Ссылка на ноутбук:](https://github.com/sonyakkmas/internship-week-1/blob/main/week-1/2-tuesday/main.ipynb)
 
 2. **Практика 2: Полная предобработка и EDA датасета.**
 
@@ -54,7 +54,7 @@
 
    Результат: Был создан полный пайплайн для предобработки данных с кастомным заполнителем пропущенных значений для возраста. После обработки данные были готовы для обучения модели, а проверка на логистической регрессии показала точность около 0.84.
 
-   [Ссылка на ноутбук:](https://github.com/sonyakkmas/internship-week-1/blob/main/3-wednesday/main.ipynb)
+   [Ссылка на ноутбук:](https://github.com/sonyakkmas/internship-week-1/blob/main/week-1/3-wednesday/main.ipynb)
 
 3. **Практика 3: Обучение логистической регрессии.**
 
@@ -62,7 +62,7 @@
 
    Результат: Модель показала accuracy около 0.84 и F1 score около 0.79 для валидационной выборки. 
 
-   [Ссылка на ноутбук:](https://github.com/sonyakkmas/internship-week-1/blob/main/4-thursday/main.ipynb)
+   [Ссылка на ноутбук:](https://github.com/sonyakkmas/internship-week-1/blob/main/week-1/4-thursday/main.ipynb)
 
 4. **Практика 4: Обучение и сравнение логистической регрессии, дерева решений и случайного леса.**
 
@@ -70,7 +70,7 @@
 
    Результат: Лучший результат показала Logistic Regression с validation accuracy около 0.84 и F1-score около 0.79. Random Forest показал немного более слабый результат, а Decision Tree оказался наименее точной моделью.
 
-   [Ссылка на ноутбук:](https://github.com/sonyakkmas/internship-week-1/blob/main/5-friday/practice-4.ipynb)
+   [Ссылка на ноутбук:](https://github.com/sonyakkmas/internship-week-1/blob/main/week-1/5-friday/practice-4.ipynb)
 
 5. **Практика 5: Настройка Random Forest с помощью RandomizedSearchCV и оценка качества модели.**
 
@@ -78,7 +78,7 @@
 
    Результат: Лучший результат на validation показала Logistic Regression: accuracy около 0.85, F1-score около 0.80 и ROC-AUC около 0.88. Random Forest и Decision Tree также показали результат выше случайного классификатора, но немного уступили Logistic Regression.
 
-   [Ссылка на ноутбук:](https://github.com/sonyakkmas/internship-week-1/blob/main/5-friday/practice-5.ipynb)
+   [Ссылка на ноутбук:](https://github.com/sonyakkmas/internship-week-1/blob/main/week-1/5-friday/practice-5.ipynb)
 
 ---
 
