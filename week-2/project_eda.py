@@ -4,24 +4,28 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import seaborn as sns
 
+
+# ------------------------------------------------------------
+# Constants
+# ------------------------------------------------------------
+
 TARGET = "SalePrice"
 
-
 PRETTY_NAMES = {
-    "SalePrice": "Sale Price",
+    "SalePrice": "Sale Price (USD)",
     "Overall Qual": "Overall Quality",
-    "Gr Liv Area": "Above Ground Living Area",
+    "Gr Liv Area": "Above Ground Living Area (sq. ft.)",
     "Garage Cars": "Garage Cars",
-    "Garage Area": "Garage Area",
-    "Total Bsmt SF": "Total Basement Area",
-    "1st Flr SF": "1st Floor Area",
+    "Garage Area": "Garage Area (sq. ft.)",
+    "Total Bsmt SF": "Total Basement Area (sq. ft.)",
+    "1st Flr SF": "1st Floor Area (sq. ft.)",
     "Year Built": "Year Built",
     "Full Bath": "Full Bathrooms Above Ground",
     "Year Remod/Add": "Year Remodel",
-    "Mas Vnr Area": "Masonry Veneer Area",
+    "Mas Vnr Area": "Masonry Veneer Area (sq. ft.)",
     "TotRms AbvGrd": "Rooms Above Ground",
     "Fireplaces": "Number of Fireplaces",
-    "BsmtFin SF 1": "Finished Basement Area Type 1",
+    "BsmtFin SF 1": "Finished Basement Area Type 1 (sq. ft.)",
     "Garage Yr Blt": "Garage Year Built",
     "Exter Qual": "Exterior Quality",
     "Kitchen Qual": "Kitchen Quality",
@@ -37,9 +41,10 @@ PRETTY_NAMES = {
     "Pool Area": "Pool Area",
 }
 
-def pretty(col):
-    return PRETTY_NAMES.get(col, col)
 
+# ------------------------------------------------------------
+# Helpers
+# ------------------------------------------------------------
 
 def apply_k_formatter(ax, axis="x"):
     def k_formatter(x, pos):
@@ -68,6 +73,22 @@ def make_axes(n_plots, n_cols=3, figsize=(16, 8), sharey=False):
 
     return fig, axes
 
+
+def pretty(col):
+    return PRETTY_NAMES.get(col, col)
+
+
+def get_unique_values(df, cols):
+    return {
+        col: sorted(df[col].dropna().unique())
+        for col in cols
+    }
+
+
+# ------------------------------------------------------------
+# Target variable analysis
+# ------------------------------------------------------------
+
 def plot_target_distribution(df, target=TARGET):
     plt.figure(figsize=(16, 9))
 
@@ -84,6 +105,11 @@ def plot_target_distribution(df, target=TARGET):
     plt.ylabel("Number of Houses")
 
     plt.show()
+
+
+# ------------------------------------------------------------
+# Correlation analysis
+# ------------------------------------------------------------
 
 def get_top_correlations(df, target=TARGET, threshold=0.4):
     corr_with_target = (
@@ -111,6 +137,7 @@ def get_top_correlations(df, target=TARGET, threshold=0.4):
 
     return top_corr_df
 
+
 def plot_top_correlations(df, target=TARGET, threshold=0.4):
     top_corr = get_top_correlations(
         df=df,
@@ -132,6 +159,46 @@ def plot_top_correlations(df, target=TARGET, threshold=0.4):
     plt.show()
 
     return top_corr
+
+
+def plot_top_target_corr_matrix(df, numeric_cols, target="SalePrice", top_n=10, figsize=(12, 10)):
+    corr_with_target = (
+        df[numeric_cols]
+        .corr(numeric_only=True)[target]
+        .drop(target)
+    )
+
+    top_features = (
+        corr_with_target
+        .abs()
+        .sort_values(ascending=False)
+        .head(top_n)
+        .index
+        .tolist()
+    )
+
+    corr_subset = df[top_features + [target]].corr(numeric_only=True)
+
+    plt.figure(figsize=figsize)
+
+    sns.heatmap(
+        corr_subset,
+        annot=True,
+        cmap="coolwarm",
+        center=0,
+        fmt=".2f"
+    )
+
+    plt.title(f"Correlation Matrix of Top {top_n} Numeric Features Related to {target}")
+    plt.show()
+
+    return corr_subset
+
+
+
+# ------------------------------------------------------------
+# Numerical feature distributions
+# ------------------------------------------------------------
 
 def plot_numeric_distributions(
     df,
@@ -169,6 +236,11 @@ def plot_numeric_distributions(
     plt.tight_layout()
     plt.show()
 
+
+# ------------------------------------------------------------
+# Categorical feature analysis
+# ------------------------------------------------------------
+
 def get_categorical_importance(df, categorical_cols, target=TARGET, min_count=10):
     cat_importance = []
 
@@ -195,6 +267,7 @@ def get_categorical_importance(df, categorical_cols, target=TARGET, min_count=10
     )
 
     return cat_importance_df
+
 
 def plot_categorical_counts(
     df,
@@ -250,6 +323,10 @@ def plot_categorical_counts(
     plt.show()
 
 
+# ------------------------------------------------------------
+# Relationships between numerical features and target
+#------------------------------------------------------------
+
 def plot_numeric_vs_target(
     df,
     features,
@@ -303,6 +380,10 @@ def plot_numeric_vs_target(
     plt.show()
 
 
+# ------------------------------------------------------------
+# Relationships between categorical features and target
+# ------------------------------------------------------------
+
 def plot_boxplots_vs_target(
     df,
     features,
@@ -340,46 +421,6 @@ def plot_boxplots_vs_target(
         fig.suptitle(title, fontsize=16, y=1.02)
 
     plt.tight_layout()
-    plt.show()
-
-
-def plot_pairplot_by_price_category(
-    df,
-    features,
-    target=TARGET,
-    q=3,
-    labels=None
-):
-    if labels is None:
-        labels = ["Low", "Medium", "High"]
-
-    pairplot_df = df[features + [target]].copy()
-
-    pairplot_df["Price Category"] = pd.qcut(
-        pairplot_df[target],
-        q=q,
-        labels=labels
-    )
-
-    pairplot_df = pairplot_df.drop(columns=[target])
-
-    pairplot_df = pairplot_df.rename(
-        columns={col: pretty(col) for col in pairplot_df.columns}
-    )
-
-    g = sns.pairplot(
-        pairplot_df,
-        hue="Price Category",
-        height=2.4,
-        diag_kind="kde"
-    )
-
-    g.fig.suptitle(
-        "Relationships Between Key Features by Price Category",
-        y=1.03,
-        fontsize=16
-    )
-
     plt.show()
 
 
@@ -422,98 +463,121 @@ def plot_percentage_crosstab_heatmap(
     return cross_tab
 
 
-def plot_pos_neg_corr_heatmap(
+# ------------------------------------------------------------
+# Pairplot by price category
+# ------------------------------------------------------------
+
+def plot_pairplot_by_price_category(
     df,
+    features,
     target=TARGET,
-    n_positive=10,
-    n_negative=10,
-    figsize=(14, 10)
+    q=3,
+    labels=None
 ):
-    corr_matrix = df.corr(numeric_only=True)
-    corr_with_target = corr_matrix[target].drop(target)
+    if labels is None:
+        labels = ["Low", "Medium", "High"]
 
-    positive_features = (
-        corr_with_target
-        .sort_values(ascending=False)
-        .head(n_positive)
-        .index
+    pairplot_df = df[features + [target]].copy()
+
+    pairplot_df["Price Category"] = pd.qcut(
+        pairplot_df[target],
+        q=q,
+        labels=labels
     )
 
-    negative_features = (
-        corr_with_target
-        .sort_values(ascending=True)
-        .head(n_negative)
-        .index
+    pairplot_df = pairplot_df.drop(columns=[target])
+
+    pairplot_df = pairplot_df.rename(
+        columns={col: pretty(col) for col in pairplot_df.columns}
     )
 
-    selected_cols = [target] + positive_features.tolist() + negative_features.tolist()
-
-    plt.figure(figsize=figsize)
-
-    sns.heatmap(
-        df[selected_cols].corr(),
-        annot=True,
-        cmap="coolwarm",
-        center=0,
-        fmt=".2f",
-        linewidths=0.5
+    g = sns.pairplot(
+        pairplot_df,
+        hue="Price Category",
+        height=2.4,
+        diag_kind="kde"
     )
 
-    plt.title("Correlation Heatmap of Most Positive and Negative Features Related to Sale Price")
+    g.fig.suptitle(
+        "Relationships Between Key Features by Price Category",
+        y=1.03,
+        fontsize=16
+    )
+
     plt.show()
 
 
-def get_high_corr_pairs(df, numeric_cols, threshold=0.8):
-    corr_matrix = df[numeric_cols].corr().abs()
+# ------------------------------------------------------------
+# Structured missingness groups
+# ------------------------------------------------------------
 
-    upper_triangle = corr_matrix.where(
-        np.triu(np.ones(corr_matrix.shape), k=1).astype(bool)
-    )
+missingness_groups = {
+    "No basement": [
+        "Bsmt Qual",
+        "Bsmt Cond",
+        "Bsmt Exposure",
+        "BsmtFin Type 1",
+        "BsmtFin Type 2",
+        "BsmtFin SF 1",
+        "BsmtFin SF 2",
+        "Bsmt Unf SF",
+        "Total Bsmt SF",
+        "Bsmt Full Bath",
+        "Bsmt Half Bath"
+    ],
 
-    high_corr_pairs = (
-        upper_triangle
-        .stack()
-        .sort_values(ascending=False)
-    )
+    "No garage": [
+        "Garage Type",
+        "Garage Yr Blt",
+        "Garage Finish",
+        "Garage Qual",
+        "Garage Cond",
+        "Garage Cars",
+        "Garage Area"
+    ],
 
-    return high_corr_pairs[high_corr_pairs > threshold]
+    "No fireplace": [
+        "Fireplace Qu"
+    ],
+
+    "No masonry veneer": [
+        "Mas Vnr Type",
+        "Mas Vnr Area"
+    ],
+
+    "No pool": [
+        "Pool QC"
+    ],
+
+    "No fence": [
+        "Fence"
+    ],
+
+    "No alley access": [
+        "Alley"
+    ]
+}
 
 
-def check_structured_missingness(df, missing_col, condition_col, expected_value=0):
-    missing_mask = df[missing_col].isna()
+def get_structural_missingness_conditions(df):
+    return {
+        "No basement": df["Total Bsmt SF"].fillna(0).eq(0),
 
-    percent = (
-        df.loc[missing_mask, condition_col]
-        .eq(expected_value)
-        .mean()
-        * 100
-    )
+        "No garage": (
+            df["Garage Area"].fillna(0).eq(0) &
+            df["Garage Cars"].fillna(0).eq(0)
+        ),
 
-    print(
-        f"{missing_col}: {percent:.2f}% of missing values correspond to "
-        f"{condition_col} = {expected_value}"
-    )
+        "No fireplace": df["Fireplaces"].fillna(0).eq(0),
+        "No masonry veneer": df["Mas Vnr Area"].fillna(0).eq(0),
+        "No pool": df["Pool Area"].fillna(0).eq(0),
+        "No fence": df["Fence"].isna(),
+        "No alley access": df["Alley"].isna()
+    }
 
-    return percent
-
-
-def check_multiple_structured_missingness(
-    df,
-    missing_cols,
-    condition_col,
-    expected_value=0
-):
-    results = {}
-
-    for col in missing_cols:
-        results[col] = check_structured_missingness(
-            df=df,
-            missing_col=col,
-            condition_col=condition_col,
-            expected_value=expected_value
-        )
-
-    return pd.Series(results).sort_values(ascending=False)
+# ------------------------------------------------------------
+# Structured missingness checks
+# ------------------------------------------------------------
 
 
 def check_missingness_explanation(df, missing_col, condition, explanation):
@@ -552,9 +616,28 @@ def get_missingness_explanation_table(df, conditions, missingness_groups):
         )
     )
 
+def drop_unexplained_structural_missingness(df, conditions, missingness_groups):
+    unexplained_missing_mask = pd.Series(False, index=df.index)
 
-### АНАЛИЗ ВЫБРОСОВ И ОБЩЕГО КАЧЕСТВА ДАННЫХ
+    for explanation, cols in missingness_groups.items():
+        absence_condition = conditions[explanation]
 
+        for col in cols:
+            unexplained_missing_mask |= (
+                df[col].isna() & ~absence_condition
+            )
+
+    cleaned_df = df.loc[~unexplained_missing_mask].copy()
+
+    print("Before:", df.shape)
+    print("After:", cleaned_df.shape)
+    print("Dropped rows:", df.shape[0] - cleaned_df.shape[0])
+
+    return cleaned_df
+
+# ------------------------------------------------------------
+# Outlier analysis and general data quality checks
+# ------------------------------------------------------------
 
 def get_iqr_outliers(df, cols, factor=1.5):
     results = []
